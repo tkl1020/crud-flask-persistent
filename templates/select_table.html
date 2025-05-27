@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Select Table{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>📋 Select Table to Manage</h3>
+    <p>Choose which table you'd like to perform CRUD operations on:</p>
+    
+    {% if tables %}
+        <div style="margin-top: 20px;">
+            {% for table in tables %}
+                <a href="{{ url_for('crud_interface', session_id=session_id, table=table) }}" class="btn" style="display: block; margin-bottom: 10px; text-align: center;">
+                    📊 {{ table }}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-danger">
+            No tables found in this database. The database might be empty or corrupted.
+        </div>
+    {% endif %}
+</div>
+
+<!-- Save DB option -->
+<form action="{{ url_for('save_db', session_id=session_id) }}" method="post" style="margin-top: 20px;">
+    <button type="submit" class="btn">💾 Save This Database</button>
+</form>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{{ url_for('index') }}" class="btn" style="background: #6c757d;">← Back to Home</a>
+</div>
+{% endblock %}

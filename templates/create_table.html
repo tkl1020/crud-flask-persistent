@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Create Table{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3>🔨 Create New Table</h3>
+    <p>Define your table structure by adding columns and their data types:</p>
+    
+    <form action="{{ url_for('create_table_post', session_id=session_id) }}" method="post" id="createTableForm">
+        <div class="form-group">
+            <label for="table_name">Table Name:</label>
+            <input type="text" id="table_name" name="table_name" placeholder="Enter table name" required>
+        </div>
+        
+        <div class="dynamic-form">
+            <h4>Table Columns:</h4>
+            <div id="columns-container">
+                <div class="column-input">
+                    <input type="text" name="column_name[]" placeholder="Column name" required>
+                    <select name="column_type[]" required>
+                        <option value="TEXT">TEXT</option>
+                        <option value="INTEGER">INTEGER</option>
+                        <option value="REAL">REAL</option>
+                        <option value="BLOB">BLOB</option>
+                        <option value="NULL">NULL</option>
+                    </select>
+                    <button type="button" class="remove-btn" onclick="removeColumn(this)" style="display: none;">Remove</button>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" onclick="addColumn()" style="margin-top: 10px;">+ Add Column</button>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn">Create Table</button>
+            <a href="{{ url_for('index') }}" class="btn" style="background: #6c757d; margin-left: 10px;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function addColumn() {
+    const container = document.getElementById('columns-container');
+    const newColumn = document.createElement('div');
+    newColumn.className = 'column-input';
+    newColumn.innerHTML = `
+        <input type="text" name="column_name[]" placeholder="Column name" required>
+        <select name="column_type[]" required>
+            <option value="TEXT">TEXT</option>
+            <option value="INTEGER">INTEGER</option>
+            <option value="REAL">REAL</option>
+            <option value="BLOB">BLOB</option>
+            <option value="NULL">NULL</option>
+        </select>
+        <button type="button" class="remove-btn" onclick="removeColumn(this)">Remove</button>
+    `;
+    container.appendChild(newColumn);
+    
+    // Show remove buttons if we have more than one column
+    const removeButtons = container.querySelectorAll('.remove-btn');
+    removeButtons.forEach(btn => btn.style.display = removeButtons.length > 1 ? 'block' : 'none');
+}
+
+function removeColumn(button) {
+    const container = document.getElementById('columns-container');
+    if (container.children.length > 1) {
+        button.parentElement.remove();
+        
+        // Hide remove buttons if we only have one column left
+        const removeButtons = container.querySelectorAll('.remove-btn');
+        removeButtons.forEach(btn => btn.style.display = removeButtons.length > 1 ? 'block' : 'none');
+    }
+}
+
+// Initialize - hide remove button for the first column
+document.addEventListener('DOMContentLoaded', function() {
+    const removeButtons = document.querySelectorAll('.remove-btn');
+    removeButtons.forEach(btn => btn.style.display = 'none');
+});
+</script>
+{% endblock %}

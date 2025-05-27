@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to CRUD App{% endblock %}
+
+{% block content %}
+<div class="two-column">
+    <div class="card">
+        <h3>📤 Upload Existing Database</h3>
+        <p>Upload your SQLite database file to start managing your data.</p>
+        
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Choose Database File:</label>
+                <input type="file" id="file" name="file" accept=".db,.sqlite,.sqlite3" required>
+                <small style="color: #666; font-size: 14px;">Supported formats: .db, .sqlite, .sqlite3</small>
+            </div>
+            <button type="submit" class="btn">Upload Database</button>
+        </form>
+    </div>
+    
+    <div class="card">
+        <h3>🆕 Create New Database</h3>
+        <p>Create a brand new database and build your tables from scratch.</p>
+        
+        <form action="{{ url_for('create_new_db') }}" method="post">
+            <div class="form-group">
+                <label for="db_name">Database Name:</label>
+                <input type="text" id="db_name" name="db_name" placeholder="Enter database name" required>
+            </div>
+            <button type="submit" class="btn">Create New Database</button>
+        </form>
+    </div>
+</div>
+
+<!-- SAVED DATABASES -->
+<div class="card" style="margin-top: 30px;">
+    <h3>📂 Your Saved Databases</h3>
+    {% if user_files %}
+        <ul>
+            {% for file in user_files %}
+                <li style="margin: 10px 0;">
+                    <a href="{{ url_for('load_saved_db', file_id=file[0]) }}" class="btn">
+                        {{ file[1] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p style="color: #666;">You haven't saved any databases yet.</p>
+    {% endif %}
+</div>
+
+<div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 6px;">
+    <h4>How it works:</h4>
+    <p>1. Upload an existing database or create a new one</p>
+    <p>2. Select or create tables to manage</p>
+    <p>3. Perform CRUD operations on your data</p>
+    <p>4. Save databases to your account and download when finished</p>
+</div>
+{% endblock %}
